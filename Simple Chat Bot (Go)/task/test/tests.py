@@ -10,23 +10,23 @@ CheckResult.wrong = lambda feedback: CheckResult(False, feedback)
 class ChattyBotTest(StageTest):
     def generate(self) -> List[TestCase]:
         return [
-            TestCase(stdin="John", attach="John"),
-            TestCase(stdin="Nick", attach="Nick")
+            TestCase(stdin="John\n1\n2\n1", attach=("John", 22)),
+            TestCase(stdin="Nick\n2\n0\n0", attach=("Nick", 35))
         ]
 
     def check(self, reply: str, clue: Any) -> CheckResult:
         lines = reply.strip().splitlines()
 
-        # Check if the output has exactly 4 lines
-        if len(lines) != 4:
+        # Check if the output has exactly 7 lines
+        if len(lines) != 7:
             return CheckResult.wrong(
-                "Your program should output exactly 4 lines!\n" +
+                "Your program should output exactly 7 lines!\n" +
                 f"Lines found: {len(lines)}\n"
                 "Ensure you are not adding any extra lines or missing any\n" +
                 "and that your program outputs the lines exactly as shown in the above example."
             )
 
-        # Check if the first line matches the format `Hello! My name is {bot_name}.`
+        # Check if the first matches the format `Hello! My name is {bot_name}.`
         if not re.match(r"^Hello! My name is .*\.$", lines[0]):
             return CheckResult.wrong(
                 "The 1-st line of your output is NOT correct.\n" +
@@ -60,8 +60,30 @@ class ChattyBotTest(StageTest):
                 "where {name} is the name you input earlier."
             )
 
+        # Check if the fifth line matches the format: `Let me guess your age.`
+        if lines[4] != "Let me guess your age.":
+            return CheckResult.wrong(
+                "The 5-th line of your output is NOT correct.\n" +
+                "Your program incorrectly output as the 5-th line: " + lines[4] + "\n\n" +
+                "The 5-th line should be: 'Let me guess your age.'"
+            )
+
+        # Check if the sixth line matches the format: `Enter remainders of dividing your age by 3, 5 and 7.`
+        if lines[5] != "Enter remainders of dividing your age by 3, 5 and 7.":
+            return CheckResult.wrong(
+                "The 6-th line of your output is NOT correct.\n" +
+                "Your program incorrectly output as the 6-th line: " + lines[5] + "\n\n" +
+                "The 6-th line should be: 'Enter remainders of dividing your age by 3, 5 and 7.'"
+            )
+
+        # Check if the seventh line correctly calculates the age based on the inputs
+        age_pattern = rf"^Your age is {clue[1]}; that's a good time to start programming!$"
+        if not re.match(age_pattern, lines[6]):
+            return CheckResult.wrong(
+                "The 7-th line of your output does NOT match the expected format "
+                "or does NOT calculate the age correctly.\n" +
+                "Your program incorrectly output as the 7-th line: " + lines[6] + "\n\n" +
+                f"The 7th line should be: 'Your age is {clue[1]}; that's a good time to start programming!'"
+            )
+
         return CheckResult.correct()
-
-
-if __name__ == '__main__':
-    ChattyBotTest().run_tests()
