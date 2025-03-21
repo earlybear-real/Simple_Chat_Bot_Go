@@ -20,7 +20,7 @@ class ChattyBotTest(StageTest):
     def check(self, reply: str, clue: Any) -> CheckResult:
         lines = reply.strip().splitlines()
 
-        # Stage 1 tests
+        # Previous stages common checks
         if not re.match(r"^Hello! My name is .*\.$", lines[0]):
             return CheckResult.wrong(
                 "The 1-st line of your output is NOT correct.\n" +
@@ -36,7 +36,6 @@ class ChattyBotTest(StageTest):
                 "where {birth_year} is a four-digit number like 2023."
             )
 
-        # Stage 2 tests
         if lines[2] != "Please, remind me of your name.":
             return CheckResult.wrong(
                 "The 3-rd line of your output is NOT correct.\n" +
@@ -55,7 +54,6 @@ class ChattyBotTest(StageTest):
                 "where {name} is the name you input earlier."
             )
 
-        # Stage 3 tests
         if lines[4] != "Let me guess your age.":
             return CheckResult.wrong(
                 "The 5-th line of your output is NOT correct.\n" +
@@ -143,6 +141,42 @@ class ChattyBotTest(StageTest):
                 "Your program counted and printed more numbers than expected.\n" +
                 f"Expected to count from 0 to the input number: {clue[2]} "
                 f"but your program counted past that number until: {re.match(number_pattern, lines[-2]).group(0)}"
+            )
+
+        # Stage 5 tests
+        # After the counting, the next line should introduce the programming question
+        question_intro_idx = lines.index(last_number_line) + 1
+        if lines[question_intro_idx] != "Let's test your programming knowledge.":
+            return CheckResult.wrong(
+                f"The {question_intro_idx + 1}-th line of your output is NOT correct.\n" +
+                f"Your program incorrectly output "
+                f"as the {question_intro_idx + 1}-th line: " + lines[question_intro_idx] + "\n\n" +
+                f"The {question_intro_idx + 1}-th line should be: 'Let's test your programming knowledge.'"
+            )
+
+        # Locate the question
+        question_line_idx = question_intro_idx + 1
+        if not lines[question_line_idx].endswith("?"):
+            return CheckResult.wrong(
+                "Expected a programming-related question ending with a '?', but found: " + lines[question_line_idx]
+            )
+
+        # Check multiple-choice answers
+        options_count = 0
+        idx = question_line_idx + 1
+        while idx < len(lines) and re.match(r"^\d+\.", lines[idx]):
+            options_count += 1
+            idx += 1
+
+        if options_count < 2:
+            return CheckResult.wrong(
+                "Your multiple-choice answers are less than 2. Please provide at least 2 options."
+            )
+
+        # Check if the bot prompts for incorrect answers
+        if "Please, try again." not in lines:
+            return CheckResult.wrong(
+                "Your bot should prompt the user with 'Please, try again.' for an incorrect answer."
             )
 
         # Check the last line

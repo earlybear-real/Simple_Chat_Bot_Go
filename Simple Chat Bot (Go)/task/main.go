@@ -2,33 +2,64 @@ package main
 
 import "fmt"
 
-func main() {
-	fmt.Println("Hello! My name is Aid.")
-	fmt.Println("I was created in 2023.")
-	fmt.Println("Please, remind me of your name.")
+func greet(name, year string) {
+	fmt.Println("Hello! My name is " + name + ".")
+	fmt.Println("I was created in " + year + ".")
+}
 
+func showName() {
 	var name string
+	fmt.Println("Please, remind me of your name.")
 	fmt.Scan(&name)
-
 	fmt.Println("What a great name you have, " + name + "!")
+}
+
+func guessAge() {
+	var rem3, rem5, rem7, age int
+
 	fmt.Println("Let me guess your age.")
 	fmt.Println("Enter remainders of dividing your age by 3, 5 and 7.")
-
-	var rem3, rem5, rem7, age int
 	fmt.Scan(&rem3, &rem5, &rem7)
 
 	age = (rem3*70 + rem5*21 + rem7*15) % 105
-
 	fmt.Printf("Your age is %d; that's a good time to start programming!\n", age)
+}
+
+func count() {
+	var n int
+
 	fmt.Println("Now I will prove to you that I can count to any number you want.")
-
-	// read a number and count to it here
-	var inputNum int
-	fmt.Scan(&inputNum)
-
-	for i := 0; i <= inputNum; i++ {
-		fmt.Println(i, "!")
+	fmt.Scan(&n)
+	for i := 0; i <= n; i++ {
+		fmt.Printf("%d !\n", i)
 	}
+}
 
+func startQuiz() {
+	fmt.Println("Let's test your programming knowledge.")
+	// write the question here followed by the options
+	// ...
+
+	// use an infinite for loop until the user enters the correct answer
+	for {
+		var answer int
+		fmt.Scan(&answer)
+		if answer == ? { // replace ? with the correct answer number
+			return
+		}
+		fmt.Println("Please, try again.")
+	}
+}
+
+func sayGoodbye() {
 	fmt.Println("Congratulations, have a nice day!")
+}
+
+func main() {
+	greet("Aid", "2023") // change it as you need
+	showName()
+	guessAge()
+	count()
+	// call the correct function here
+	sayGoodbye()
 }
