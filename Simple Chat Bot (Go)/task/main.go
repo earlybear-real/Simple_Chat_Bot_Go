@@ -35,16 +35,24 @@ func count() {
 	}
 }
 
+func showOptions() {
+	fmt.Println("1. Because this makes fun.")
+	fmt.Println("2. To make it harder to understand.")
+	fmt.Println("3. To make the code more readable and make it easier to make changes to single parts.")
+	fmt.Println("4. Be other developers so can't copy my code.")
+}
+
 func startQuiz() {
 	fmt.Println("Let's test your programming knowledge.")
 	// write the question here followed by the options
-	// ...
+	fmt.Println("Why should we decompose big function into smaller ones?")
+	showOptions()
 
 	// use an infinite for loop until the user enters the correct answer
 	for {
 		var answer int
 		fmt.Scan(&answer)
-		if answer == ? { // replace ? with the correct answer number
+		if answer == 3 { // replace ? with the correct answer number
 			return
 		}
 		fmt.Println("Please, try again.")
@@ -60,6 +68,6 @@ func main() {
 	showName()
 	guessAge()
 	count()
-	// call the correct function here
+	startQuiz()
 	sayGoodbye()
 }
